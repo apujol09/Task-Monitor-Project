@@ -1,11 +1,54 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { Component } from "react";
+import { StyleSheet, Text, View, TextInput, Button } from "react-native";
 
-export default class App extends React.Component {
+import GoalItem from './src/components/GoalItem';
+
+export default class App extends Component {
+  state = {
+    goalName: "",
+    goals: []
+  };
+
+  goalChangedHandler = val => {
+    this.setState({
+      goalName: val,
+    });
+  };
+
+  goalSubmitHandler = () => {
+    if (this.state.goalName.trim() === "") {
+      return;
+    }
+
+    this.setState(prevState => {
+      return {
+        goals: prevState.goals.concat(prevState.goalName)
+      };
+    });
+  };
+
   render() {
+    const goalsOutput = this.state.goals.map((thisGoal, i) => (
+      <GoalItem key={i}
+      goalName={thisGoal}/>
+    ));
     return (
       <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder="Add a goal"
+            value={this.state.goalName}
+            onChangeText={this.goalChangedHandler}
+            style={styles.goalInput}
+            
+          />
+          <Button
+            title="Add"
+            style={styles.goalInputButton}
+            onPress={this.goalSubmitHandler}
+          />
+        </View>
+        <View style={styles.listContainer}>{goalsOutput}</View>
       </View>
     );
   }
@@ -13,9 +56,26 @@ export default class App extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#ff0',
-    alignItems: 'center',
-    justifyContent: 'center',
+    padding: 30,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "flex-start"
   },
+  inputContainer: {
+    // flex: 1,
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
+  goalInput: {
+    width: "70%",
+    fontSize: 20
+  },
+  goalInputButton: {
+    width: "30%"
+  },
+  listContainer: {
+    width: "100%"
+  }
 });
